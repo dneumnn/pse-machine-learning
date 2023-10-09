@@ -1,0 +1,3 @@
+Peter,20,2
+Paul,0,3
+Mary,25,1

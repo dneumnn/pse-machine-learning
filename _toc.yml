@@ -1,0 +1,26 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: intro_en
+parts:
+  - caption: LE 1 - Introduction into Machine Learning with Python
+    chapters:
+    - file: le1/pse-ml-overview
+      sections:
+      - file: le1/pse-ml-learning_problem
+      - file: le1/pse-ml-three_types_of_machine_learning
+    - file: le1/pse-ml-python
+      sections:
+      - file: le1/pse-ml-introduction_to_python3
+      - file: le1/pse-ml-python_environment
+    - file: le1/pse-ml-data
+      sections:
+        - file: le1/pse-ml-data_tabular_data
+        - file: le1/pse-ml-data_tabular_data_2
+        - file: le1/pse-ml-data_timeseries
+        - file: le1/pse-ml-data_images
+        - file: le1/pse-ml-data_graphs
+  - caption: Further Reading
+    chapters:
+    - file: further_reading
