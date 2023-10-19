@@ -1,0 +1,2161 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Gradient Descent &#8212; Machine Learning with Python</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'le2/pse-ml-02-02-gradient_descent';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Linear and Non-linear Regression" href="pse-ml-02-03-linear_regression.html" />
+    <link rel="prev" title="Supervised Learning" href="pse-ml-02-01-supervised_learning.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro_en.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Machine Learning with Python</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro_en.html">
+                    PSE-ML - Machine Learning with Python
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part 1 - Introduction into Machine Learning with Python</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../le1/pse-ml-overview.html">Machine Learning</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../le1/pse-ml-learning_problem.html">Learning Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../le1/pse-ml-three_types_of_machine_learning.html">Three Types of Machine Learning</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../le1/pse-ml-python.html">Python Introduction</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../le1/pse-ml-introduction_to_python3.html">Python - A Short Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../le1/pse-ml-python_environment.html">Python Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../le1/pse-ml-data.html">Data</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../le1/pse-ml-data_tabular_data.html">Tabular Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../le1/pse-ml-data_tabular_data_2.html">Tabular Data 2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../le1/pse-ml-data_timeseries.html">What is a time series?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../le1/pse-ml-data_images.html">Images as Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../le1/pse-ml-data_graphs.html">Graphs and Networks</a></li>
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part 2 - Classical Machine Learning</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pse-ml-02-00-overview.html">Classical Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pse-ml-02-01-supervised_learning.html">Supervised Learning</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Gradient Descent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pse-ml-02-03-linear_regression.html">Linear and Non-linear Regression</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="pse-ml-02-04-classification.html">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pse-ml-02-05-logistic_regression.html">Logistic Regression</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="pse-ml-02-06-perceptron.html">Perceptron</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="pse-ml-02-07-support_vector_machine.html">Support Vector Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pse-ml-02-08-decision_tree.html">Non Linear Regression</a></li>
+
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Further Reading</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../further_reading.html">Further Reading</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fle2/pse-ml-02-02-gradient_descent.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/le2/pse-ml-02-02-gradient_descent.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Gradient Descent</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-descent-gd-algorithm">Gradient Descent (GD) Algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-descent-with-pytorch">Gradient Descent with PyTorch</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#start-with-some-toy-data">Start with some toy data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-pytorch-tensor-from-numpy-array">Create a Pytorch tensor from numpy array</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#split-the-data-into-train-and-test-data">Split the data into train and test data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#define-a-linear-model-that-fit-the-data-well">Define a linear model that fit the data well</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-mean-squared-error-as-cost-function">Use Mean Squared Error as Cost Function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#train-the-model">Train the model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#now-use-more-pytorch">Now use more PyTorch</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="gradient-descent">
+<h1>Gradient Descent<a class="headerlink" href="#gradient-descent" title="Permalink to this heading">#</a></h1>
+<p>In the last part we defined the leaning problem as finding a target function <span class="math notranslate nohighlight">\(f\)</span> from <span class="math notranslate nohighlight">\(X\)</span> to <span class="math notranslate nohighlight">\(Y\)</span>. Because we are sure their is a hidden pattern , that could be expressed in a function <span class="math notranslate nohighlight">\(f\)</span> and we are not able to pin it down, we want to learn it based on observed data. Our formulation of the learning problem makes use of a parametrized function <span class="math notranslate nohighlight">\(h_{\theta}\)</span>, that should explain the data well. We called it the hypothesis or model.</p>
+<div class="math notranslate nohighlight">
+\[h_{\theta}: X \rightarrow Y: x \mapsto h_{\theta}(x) = \hat{y}\]</div>
+<p>If <span class="math notranslate nohighlight">\(h_{\theta}\)</span> explains the data well according to an appropriate loss function <span class="math notranslate nohighlight">\(L\)</span>, than the empirical risk <span class="math notranslate nohighlight">\(ER\)</span></p>
+<div class="math notranslate nohighlight">
+\[ER = \frac{1}{m} \sum_{i=1}^{m} L(y^{(i)},h_{\theta}(x^{(i)}))\]</div>
+<p>converge according to the weak law of large numbers to the statistical risk and this leads to minimization problem:</p>
+<div class="math notranslate nohighlight">
+\[\hat{h} = \arg \min_{\theta} ER \]</div>
+<p>For a given set of datapoints and we define</p>
+<div class="math notranslate nohighlight">
+\[J(\theta) = \sum_{i=1}^{m} L(y^{(i)},h_{\theta}(x^{(i)}))\]</div>
+<p>as the sum over all losses for all datapoints as a function of the parameter <span class="math notranslate nohighlight">\(\theta\)</span>. We call <span class="math notranslate nohighlight">\(J\)</span> the <strong>cost</strong> (or <strong>loss</strong>) function. (Instead of the absolute error, we could also use the mean error.)</p>
+<p>If <span class="math notranslate nohighlight">\(J\)</span> is continuous, differentiable and convex we can solve the minimization problem with hill climbing algorithms. One of these is <strong>Gradient Descent</strong>, able to find a local Minimum of a differentiable reel-valued function on <span class="math notranslate nohighlight">\(R^n\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\min_{\theta \in R^n} J(\theta)\]</div>
+<p>The idea behind Gradient Descent is to approach the solution step by step. The gradient of a function points in the direction in which the function increases the most (the negative gradient does the opposite).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">f</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">gradient</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span>
+        
+<span class="c1"># y = m*(x - x1) + y1</span>
+<span class="k">def</span> <span class="nf">tangent</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">gradient</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">+</span> <span class="n">y1</span>
+
+<span class="n">x1</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+<span class="n">y1</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+
+<span class="c1"># data </span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">xrange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x1</span><span class="o">-</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">x1</span><span class="o">+</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1">#data range for tangent line</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xrange</span><span class="p">,</span> <span class="n">tangent</span><span class="p">(</span><span class="n">xrange</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="s1">&#39;C5--&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">steps</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">:</span>
+    
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    
+    <span class="n">xstep</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x1</span><span class="o">+</span><span class="n">step</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1">#data range for step</span>
+    <span class="n">ystep</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xstep</span><span class="p">,</span> <span class="n">ystep</span><span class="p">,</span> <span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+    
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">x1</span><span class="o">+</span><span class="n">step</span><span class="p">,</span> <span class="n">x1</span><span class="o">+</span><span class="n">step</span><span class="p">],</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="n">x1</span><span class="o">+</span><span class="n">step</span><span class="p">),</span> <span class="n">y1</span><span class="p">],</span> <span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">x1</span><span class="o">+</span><span class="n">step</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span> <span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">xrange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x1</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">x1</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="c1">#data range for tangent line</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xrange</span><span class="p">,</span> <span class="n">tangent</span><span class="p">(</span><span class="n">xrange</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="s1">&#39;C5--&#39;</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span> <span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;parameter theta&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;cost J&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;gradient descent&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/3f7fab285933a13dc83c8311dd3f8fd62f7627da46e83ebb7c3b5a34133e8239.png" src="../_images/3f7fab285933a13dc83c8311dd3f8fd62f7627da46e83ebb7c3b5a34133e8239.png" />
+</div>
+</div>
+<section id="gradient-descent-gd-algorithm">
+<h2>Gradient Descent (GD) Algorithm<a class="headerlink" href="#gradient-descent-gd-algorithm" title="Permalink to this heading">#</a></h2>
+<p>Let <span class="math notranslate nohighlight">\(J\)</span> be a convex, continuous and differentiable function. We want to minimize <span class="math notranslate nohighlight">\(J(\theta)\)</span>. (Find a <span class="math notranslate nohighlight">\(\theta\)</span> where <span class="math notranslate nohighlight">\(J\)</span> has a minimum.)</p>
+<ol class="arabic simple">
+<li><p>Initialization: Choose a starting point <span class="math notranslate nohighlight">\(\theta_{0} \in R^n\)</span>, a tolerence <span class="math notranslate nohighlight">\(\delta &gt; 0\)</span> and a step size <span class="math notranslate nohighlight">\(\lambda &gt; 0\)</span>, we call it the <strong>learning rate</strong>.</p></li>
+<li><p>Calculate gradient at this point <span class="math notranslate nohighlight">\(\nabla J(\theta_{0})\)</span>. (The first derivative with respect to <span class="math notranslate nohighlight">\(\theta\)</span>. This is a vector for <span class="math notranslate nohighlight">\(\theta \in R^n\)</span>!)</p></li>
+<li><p>Make a step in the opposite direction of the gradient:
+$<span class="math notranslate nohighlight">\( \theta_{t+1} = \theta_{t} - \lambda * \nabla J(\theta_{t})\)</span>$</p></li>
+<li><p>Repeat (2) and (3) until one of the criteria is met:</p>
+<ul class="simple">
+<li><p>maximum number of iterations reached</p></li>
+<li><p>step size is smaler than tolerence: <span class="math notranslate nohighlight">\(distance(\theta_{t+1}, \theta_{t}) &lt; \delta\)</span>.</p></li>
+</ul>
+</li>
+</ol>
+<p>If you want to have a look at the proof, that GD converges, than have a look at <a class="reference external" href="https://www.cs.cornell.edu/courses/cs4780/2022sp/notes/Notes11.pdf">https://www.cs.cornell.edu/courses/cs4780/2022sp/notes/Notes11.pdf</a></p>
+</section>
+<section id="gradient-descent-with-pytorch">
+<h2>Gradient Descent with PyTorch<a class="headerlink" href="#gradient-descent-with-pytorch" title="Permalink to this heading">#</a></h2>
+<p>The challenge with gradient descent is that we have to calculate the gradient <span class="math notranslate nohighlight">\(\nabla J(\theta)\)</span>. But the good thing is that PyTorch will do it for us.</p>
+<p>Numpy is a library for numerical computation, and it is widely used for handling arrays and matrices. On the other hand, PyTorch is a deep learning library that provides efficient tensor operations and <strong>automatic differentiation</strong>.</p>
+<section id="start-with-some-toy-data">
+<h3>Start with some toy data<a class="headerlink" href="#start-with-some-toy-data" title="Permalink to this heading">#</a></h3>
+<p>Lets start making some toy data with numpy, following a linear function with some random error:</p>
+<div class="math notranslate nohighlight">
+\[f(y) = w * x + b + error\]</div>
+<p>Hint: For reproducibility you could use <em>seed</em> to initialize the random number generator in python, numpy and torch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>see: <a class="reference external" href="https://pytorch.org/docs/stable/notes/randomness.html">https://pytorch.org/docs/stable/notes/randomness.html</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">w</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mi">2</span> <span class="c1">#the real parameters, we want to learn</span>
+
+<span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span> <span class="c1">#put some noise into the data</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">w</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">error</span>
+
+<span class="c1"># 100 data points between 0 and 1.</span>
+<span class="n">X_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span> 
+<span class="n">y_np</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">X_np</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_np</span> <span class="p">,</span><span class="n">y_np</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/29d3495dd41f0094ebdce3f49d05375a370faa3f08d60e5bc6f2b07848106fa0.png" src="../_images/29d3495dd41f0094ebdce3f49d05375a370faa3f08d60e5bc6f2b07848106fa0.png" />
+</div>
+</div>
+</section>
+<section id="create-a-pytorch-tensor-from-numpy-array">
+<h3>Create a Pytorch tensor from numpy array<a class="headerlink" href="#create-a-pytorch-tensor-from-numpy-array" title="Permalink to this heading">#</a></h3>
+<p>Default dtype dimension in numpy.array is 64 instead of 32 in torch.tensor. So we have to cast numpy.array to a torch.tensor. Use</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We use for plotting numpy.array and for gradient computation torch.tensor. (torch.tensor objects could been ploted by matplotlib, because they do not have ndim attribute. But you could fix it with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="o">.</span><span class="n">ndim</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span> 
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">X_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">X_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_np</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">y_np</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span> <span class="n">X</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;numpy.dtypes.Float64DType&#39;&gt; float64
+&lt;class &#39;torch.dtype&#39;&gt; torch.float32
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="split-the-data-into-train-and-test-data">
+<h3>Split the data into train and test data<a class="headerlink" href="#split-the-data-into-train-and-test-data" title="Permalink to this heading">#</a></h3>
+<p>When splitting the data into train and test, normally you use 80% training and 20% test data.</p>
+<p>There are several ways to split our data. Assume we hav 100 data points. What would happen, if you split the data like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X_train</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">80</span><span class="p">],</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">80</span><span class="p">]</span>
+<span class="n">X_test</span>  <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">80</span><span class="p">:],</span>  <span class="n">y_test</span>  <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">80</span><span class="p">:]</span>
+
+</pre></div>
+</div>
+<p>Are you shure that the first 80 data points are drown by the same probability distribution? Are your data iid? Or do we have some dependence or correlation in time?</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Lets shuffle the data before we split it. </span>
+<span class="c1"># Looks complicated, but its a good practice to work with data. </span>
+<span class="c1"># Later we will use some tools to do the work for us.</span>
+
+<span class="c1"># 1.) stack the two tensors X, y together. </span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;shape of X and y        :&quot;</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;shape of stacked dataset:&quot;</span><span class="p">,</span><span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">T</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;shape of transpose      :&quot;</span><span class="p">,</span><span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c1"># 2.) shuffe the data - make some permutations that preseves X_i and y_i staying together. </span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">0</span><span class="p">])]</span>
+
+<span class="c1"># 3.) get back X and y from dataset. </span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># 4.) define splitting constant 80% train data and 20% test data.</span>
+<span class="n">splitt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.8</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">splitt</span><span class="p">]</span>
+<span class="n">X_test</span>  <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">splitt</span><span class="p">:]</span> 
+<span class="n">y_train</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">splitt</span><span class="p">]</span>
+<span class="n">y_test</span>  <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">splitt</span><span class="p">:]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;shape of X and y (train):&quot;</span><span class="p">,</span> <span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;shape of X and y (test) :&quot;</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>shape of X and y        : torch.Size([100]) torch.Size([100])
+shape of stacked dataset: torch.Size([2, 100])
+shape of transpose      : torch.Size([100, 2])
+shape of X and y (train): torch.Size([80]) torch.Size([80])
+shape of X and y (test) : torch.Size([20]) torch.Size([20])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Use pytorch data utilities DataSet and DataLoader: https://pytorch.org/docs/stable/data.html</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">TensorDataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+
+<span class="n">train_dataset</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">train_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">test_dataset</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="n">test_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="n">train_dataloader</span><span class="p">:</span> <span class="c1">#batch size defines, how many data points are used in one step</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1">#we have defines a batch size of 20</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>torch.Size([20]) torch.Size([20])
+torch.Size([20]) torch.Size([20])
+torch.Size([20]) torch.Size([20])
+torch.Size([20]) torch.Size([20])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="define-a-linear-model-that-fit-the-data-well">
+<h3>Define a linear model that fit the data well<a class="headerlink" href="#define-a-linear-model-that-fit-the-data-well" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Define a linear model that fits the data assuming a linear correlation  (Running Linear Regression)</span>
+<span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">w</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="use-mean-squared-error-as-cost-function">
+<h3>Use Mean Squared Error as Cost Function<a class="headerlink" href="#use-mean-squared-error-as-cost-function" title="Permalink to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[J(w,b) = 1/N \sum_{i=1}^{N} (y^{(i)} - (w x^{(i)} + b))^2\]</div>
+<p>with Gradient <span class="math notranslate nohighlight">\(\nabla J(w,b)\)</span></p>
+<div class="math notranslate nohighlight">
+\[dJ/dw = 1/N \sum_{i=1}^{N} -2x^{(i)}(y^{(i)}-(w x^{(i)} + b))\]</div>
+<div class="math notranslate nohighlight">
+\[dJ/db = 1/N \sum_{i=1}^{N} -2(y^{(i)}-(w x^{(i)} + b))\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Define a loss function (Mean Squared Error)</span>
+<span class="k">def</span> <span class="nf">mse_loss</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">predictions</span> <span class="o">-</span> <span class="n">targets</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">d</span> <span class="o">*</span> <span class="n">d</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="train-the-model">
+<h3>Train the model<a class="headerlink" href="#train-the-model" title="Permalink to this heading">#</a></h3>
+<p>For Training we use build in backpropagation:</p>
+<ul>
+<li><p>for computation we go in forward direction through the computation graph</p></li>
+<li><p>for gradient computation we go backwars through the computation graph: The function</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tensor</span><span class="o">.</span><span class="n">backwards</span><span class="p">()</span> 
+</pre></div>
+</div>
+</li>
+</ul>
+<p>computes the gradient of current tensor with respect to graph leaves.</p>
+<p>see:  <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.Tensor.backward.html">https://pytorch.org/docs/stable/generated/torch.Tensor.backward.html</a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.5</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.8</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="mi">2</span><span class="p">])</span>    <span class="c1"># real y without error</span>
+
+<span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y_hat</span><span class="p">)</span>
+
+<span class="n">loss</span> <span class="o">=</span> <span class="n">mse_loss</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>tensor([2.4000])
+tensor(0.)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># initialize start parameter w</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># initialize start parameter b</span>
+
+<span class="n">epochs</span> <span class="o">=</span> <span class="mi">200</span>                     <span class="c1">#epoch defines how often we iterate over the whole dataset</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="mf">0.01</span>                        <span class="c1">#try it with different learning rates and different epochs</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>      
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="n">train_dataloader</span><span class="p">:</span> <span class="c1">#batch size in dataloader defines, how many data points are used in one step</span>
+        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>         <span class="c1"># --&gt; forward computation</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">mse_loss</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>          <span class="c1"># &lt;-- backpropagation</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>    
+            <span class="n">w</span> <span class="o">-=</span> <span class="n">w</span><span class="o">.</span><span class="n">grad</span> <span class="o">*</span> <span class="n">lr</span>
+            <span class="n">b</span> <span class="o">-=</span> <span class="n">b</span><span class="o">.</span><span class="n">grad</span> <span class="o">*</span> <span class="n">lr</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>       <span class="c1"># set gradient to zero</span>
+            <span class="n">b</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+        
+    <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">20</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> loss </span><span class="si">{</span><span class="n">loss</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;       </span><span class="si">{</span><span class="n">w</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">b</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Epoch: 0 loss 2.315269708633423
+       w=tensor([[0.4583]], requires_grad=True) b=tensor([[0.7283]], requires_grad=True)
+Epoch: 20 loss 0.041564565151929855
+       w=tensor([[0.9840]], requires_grad=True) b=tensor([[1.7564]], requires_grad=True)
+Epoch: 40 loss 0.008076940663158894
+       w=tensor([[1.0276]], requires_grad=True) b=tensor([[1.8977]], requires_grad=True)
+Epoch: 60 loss 0.0038377526216208935
+       w=tensor([[1.0129]], requires_grad=True) b=tensor([[1.9265]], requires_grad=True)
+Epoch: 80 loss 0.004827738739550114
+       w=tensor([[0.9929]], requires_grad=True) b=tensor([[1.9400]], requires_grad=True)
+Epoch: 100 loss 0.00355815258808434
+       w=tensor([[0.9741]], requires_grad=True) b=tensor([[1.9508]], requires_grad=True)
+Epoch: 120 loss 0.002635977230966091
+       w=tensor([[0.9570]], requires_grad=True) b=tensor([[1.9601]], requires_grad=True)
+Epoch: 140 loss 0.003639587666839361
+       w=tensor([[0.9416]], requires_grad=True) b=tensor([[1.9685]], requires_grad=True)
+Epoch: 160 loss 0.0019274328369647264
+       w=tensor([[0.9277]], requires_grad=True) b=tensor([[1.9761]], requires_grad=True)
+Epoch: 180 loss 0.0019800278823822737
+       w=tensor([[0.9153]], requires_grad=True) b=tensor([[1.9829]], requires_grad=True)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">b</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9045760631561279 1.9888169765472412
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0018012546
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">y_train</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">y_hat</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/364b74ccc622b0c47d7725e26b8b99ad8f060367fa201a963e616312890f253a.png" src="../_images/364b74ccc622b0c47d7725e26b8b99ad8f060367fa201a963e616312890f253a.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">####### now test our model</span>
+<span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">mse_loss</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0018171469
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">y_test</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">y_hat</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/15048b3ed2d932ab35e9d4509032510fa320915d5f49e4d2a0ec52680bed3fba.png" src="../_images/15048b3ed2d932ab35e9d4509032510fa320915d5f49e4d2a0ec52680bed3fba.png" />
+</div>
+</div>
+</section>
+<section id="now-use-more-pytorch">
+<h3>Now use more PyTorch<a class="headerlink" href="#now-use-more-pytorch" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>use PyTorch Module: Base calss or all neural network modules. <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html">https://pytorch.org/docs/stable/generated/torch.nn.Module.html</a></p></li>
+<li><p>use PyTorch Loss functions: <a class="reference external" href="https://pytorch.org/docs/stable/nn.html#loss-functions">https://pytorch.org/docs/stable/nn.html#loss-functions</a></p></li>
+<li><p>use PyTorch Optimizer:  <a class="reference external" href="https://pytorch.org/docs/stable/optim.html">https://pytorch.org/docs/stable/optim.html</a></p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Running a Single Cell Linear Regression</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+
+<span class="k">class</span> <span class="nc">LR</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+        
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+    
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LR</span><span class="p">()</span>
+<span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Parameter containing:
+ tensor([0.8823], requires_grad=True),
+ Parameter containing:
+ tensor([0.9150], requires_grad=True)]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mse_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torch.optim</span> <span class="kn">import</span> <span class="n">SGD</span><span class="p">,</span> <span class="n">Adam</span>
+<span class="c1">#optimizer = SGD(model.parameters(), lr=0.01)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span> <span class="c1"># put inside the parameters to optimize and the learning rate</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="ow">in</span> <span class="n">train_dataloader</span><span class="p">:</span>
+        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">mse_loss</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        
+        <span class="c1"># 3. Optimizer zero grad</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span> <span class="c1"># necessary for each epoch, because the optimizer accumulate the gradient changes</span>
+    
+        <span class="c1"># 4. Perform Backpropagation</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    
+        <span class="c1"># 5. Perform Gradient Descent</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">test_dataloader</span><span class="p">:</span>
+            <span class="n">y_test</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">mse_loss</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">loss</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0 - 1.085282802581787
+1 - 0.9695798754692078
+2 - 0.8617781400680542
+3 - 0.762137770652771
+4 - 0.6708019375801086
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5 - 0.5880385637283325
+6 - 0.513375461101532
+7 - 0.4465913772583008
+8 - 0.3874083459377289
+9 - 0.33536404371261597
+10 - 0.2900178134441376
+11 - 0.2507554590702057
+12 - 0.21701779961585999
+13 - 0.18818755447864532
+14 - 0.16402238607406616
+15 - 0.14356574416160583
+16 - 0.1265309751033783
+17 - 0.11245491355657578
+18 - 0.1007598489522934
+19 - 0.09123001992702484
+20 - 0.08342155814170837
+21 - 0.07694365084171295
+22 - 0.07176779210567474
+23 - 0.06744690239429474
+24 - 0.06389309465885162
+25 - 0.06098318099975586
+26 - 0.058494795113801956
+27 - 0.05631666257977486
+28 - 0.05450577661395073
+29 - 0.05283915251493454
+30 - 0.0513727180659771
+31 - 0.050133466720581055
+32 - 0.04890124872326851
+33 - 0.04773261398077011
+34 - 0.0466906800866127
+35 - 0.04572494700551033
+36 - 0.04475390911102295
+37 - 0.04384331777691841
+38 - 0.042972031980752945
+39 - 0.042073722928762436
+40 - 0.04124293103814125
+41 - 0.04035354405641556
+42 - 0.039572589099407196
+43 - 0.03878885507583618
+44 - 0.037979692220687866
+45 - 0.03719581291079521
+46 - 0.03640345111489296
+47 - 0.03560401871800423
+48 - 0.03482423722743988
+49 - 0.03405877202749252
+50 - 0.03331761062145233
+51 - 0.032540153712034225
+52 - 0.03182600811123848
+53 - 0.031149154528975487
+54 - 0.030433079227805138
+55 - 0.029715832322835922
+56 - 0.029022568836808205
+57 - 0.028330903500318527
+58 - 0.02768794633448124
+59 - 0.026993656530976295
+60 - 0.02630659006536007
+61 - 0.02568269707262516
+62 - 0.025039929896593094
+63 - 0.02443268522620201
+64 - 0.023814911022782326
+65 - 0.023173021152615547
+66 - 0.022605443373322487
+67 - 0.022036638110876083
+68 - 0.021471643820405006
+69 - 0.020922113209962845
+70 - 0.020373770967125893
+71 - 0.019841797649860382
+72 - 0.019296620041131973
+73 - 0.01876768097281456
+74 - 0.01826198399066925
+75 - 0.017765838652849197
+76 - 0.01729685626924038
+77 - 0.016834387555718422
+78 - 0.016371266916394234
+79 - 0.015902504324913025
+80 - 0.01545855961740017
+81 - 0.01501544564962387
+82 - 0.014581220224499702
+83 - 0.014147771522402763
+84 - 0.013750719837844372
+85 - 0.013385201804339886
+86 - 0.012994645163416862
+87 - 0.012612608261406422
+88 - 0.012253977358341217
+89 - 0.011888405308127403
+90 - 0.011542022228240967
+91 - 0.011201723478734493
+92 - 0.010878280736505985
+93 - 0.010555257089436054
+94 - 0.010219463147222996
+95 - 0.00991315208375454
+96 - 0.009618774056434631
+97 - 0.009330932050943375
+98 - 0.009036321192979813
+99 - 0.008751219138503075
+100 - 0.008498458191752434
+101 - 0.008234502747654915
+102 - 0.007995418272912502
+103 - 0.007759758271276951
+104 - 0.00751104298979044
+105 - 0.007288278080523014
+106 - 0.00706930598244071
+107 - 0.0068430108949542046
+108 - 0.006628725677728653
+109 - 0.006426260806620121
+110 - 0.006244021467864513
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>111 - 0.006042531691491604
+112 - 0.005840799305588007
+113 - 0.005650419741868973
+114 - 0.005461142864078283
+115 - 0.005290822125971317
+116 - 0.0051302253268659115
+117 - 0.004961219150573015
+118 - 0.004810169339179993
+119 - 0.0046656448394060135
+120 - 0.004523790441453457
+121 - 0.0043843770399689674
+122 - 0.00424115639179945
+123 - 0.004117914009839296
+124 - 0.003992076497524977
+125 - 0.0038636878598481417
+126 - 0.003747212467715144
+127 - 0.0036365233827382326
+128 - 0.0035227935295552015
+129 - 0.0034072096459567547
+130 - 0.0033001950941979885
+131 - 0.0032001822255551815
+132 - 0.003095383057370782
+133 - 0.0030056049581617117
+134 - 0.0029187817126512527
+135 - 0.0028439124580472708
+136 - 0.0027632652781903744
+137 - 0.0026834593154489994
+138 - 0.0026084408164024353
+139 - 0.0025305154267698526
+140 - 0.0024507581256330013
+141 - 0.0023785035591572523
+142 - 0.0023129857145249844
+143 - 0.0022467798553407192
+144 - 0.002186988480389118
+145 - 0.002127949381247163
+146 - 0.0020697745494544506
+147 - 0.0020192319061607122
+148 - 0.0019592021126300097
+149 - 0.0019039034377783537
+150 - 0.0018498215358704329
+151 - 0.001803134335204959
+152 - 0.0017613734817132354
+153 - 0.0017163108568638563
+154 - 0.0016743469750508666
+155 - 0.0016354533145204186
+156 - 0.0015980687458068132
+157 - 0.0015598537866026163
+158 - 0.0015237114857882261
+159 - 0.0014890816528350115
+160 - 0.0014558329712599516
+161 - 0.0014265042264014482
+162 - 0.001398643827997148
+163 - 0.0013685269514098763
+164 - 0.0013397521106526256
+165 - 0.0013127961428835988
+166 - 0.0012842564610764384
+167 - 0.0012612795690074563
+168 - 0.0012386906892061234
+169 - 0.0012146271765232086
+170 - 0.0011928561143577099
+171 - 0.0011704738717526197
+172 - 0.0011498311068862677
+173 - 0.0011317103635519743
+174 - 0.0011179164284840226
+175 - 0.001099453424103558
+176 - 0.0010832218686118722
+177 - 0.0010673163924366236
+178 - 0.0010529140708968043
+179 - 0.0010343488538637757
+180 - 0.0010219225659966469
+181 - 0.0010073805460706353
+182 - 0.00099357427097857
+183 - 0.0009806721936911345
+184 - 0.0009683839161880314
+185 - 0.0009572240523993969
+186 - 0.000948534463532269
+187 - 0.0009370712796226144
+188 - 0.0009289095178246498
+189 - 0.0009195059537887573
+190 - 0.000907955109141767
+191 - 0.0009012740920297801
+192 - 0.0008936004596762359
+193 - 0.0008851696038618684
+194 - 0.0008758551557548344
+195 - 0.0008710246765986085
+196 - 0.000863476365339011
+197 - 0.0008557804976589978
+198 - 0.0008519839611835778
+199 - 0.0008457606891170144
+200 - 0.0008410263108089566
+201 - 0.0008358919294551015
+202 - 0.0008286560187116265
+203 - 0.0008239915478043258
+204 - 0.0008171002264134586
+205 - 0.000813086808193475
+206 - 0.000808760873042047
+207 - 0.000808234210126102
+208 - 0.0008036578074097633
+209 - 0.0007995031774044037
+210 - 0.0007968518766574562
+211 - 0.0007947523263283074
+212 - 0.0007910635322332382
+213 - 0.0007886496605351567
+214 - 0.0007834434509277344
+215 - 0.0007799984305165708
+216 - 0.0007758558494970202
+217 - 0.0007722274749539793
+218 - 0.0007704180898144841
+219 - 0.0007689347257837653
+220 - 0.0007694243686273694
+221 - 0.0007668515318073332
+222 - 0.0007654194487258792
+223 - 0.0007622871198691428
+224 - 0.0007620060932822526
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>225 - 0.0007577278884127736
+226 - 0.0007575209601782262
+227 - 0.0007551852613687515
+228 - 0.0007547592977061868
+229 - 0.0007541410741396248
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>230 - 0.000752172083593905
+231 - 0.0007504543755203485
+232 - 0.0007493285229429603
+233 - 0.0007464629015885293
+234 - 0.000745039782486856
+235 - 0.0007468407857231796
+236 - 0.0007447938551194966
+237 - 0.0007426847005262971
+238 - 0.0007408851524814963
+239 - 0.0007416473235934973
+240 - 0.0007432063575834036
+241 - 0.0007412078557536006
+242 - 0.000741632713470608
+243 - 0.000740904186386615
+244 - 0.0007386660436168313
+245 - 0.0007371245301328599
+246 - 0.0007362308679148555
+247 - 0.000736352929379791
+248 - 0.0007364441407844424
+249 - 0.0007388232625089586
+250 - 0.0007352588581852615
+251 - 0.0007323925965465605
+252 - 0.0007342447061091661
+253 - 0.0007334942929446697
+254 - 0.0007355418056249619
+255 - 0.0007351384265348315
+256 - 0.0007343879551626742
+257 - 0.0007315960829146206
+258 - 0.0007297125994227827
+259 - 0.0007305633625946939
+260 - 0.0007293691160157323
+261 - 0.0007305053877644241
+262 - 0.0007300449069589376
+263 - 0.0007316209957934916
+264 - 0.0007287359330803156
+265 - 0.0007301254663616419
+266 - 0.0007284414605237544
+267 - 0.0007279895944520831
+268 - 0.0007290205103345215
+269 - 0.0007291457732208073
+270 - 0.0007290580542758107
+271 - 0.0007292114896699786
+272 - 0.0007287418702617288
+273 - 0.0007280110148712993
+274 - 0.0007263345760293305
+275 - 0.0007255271775647998
+276 - 0.0007254961528815329
+277 - 0.0007253554067574441
+278 - 0.0007260770653374493
+279 - 0.000727870617993176
+280 - 0.0007262509898282588
+281 - 0.000728355604223907
+282 - 0.0007259795675054193
+283 - 0.0007269080961123109
+284 - 0.0007280460558831692
+285 - 0.0007275206735357642
+286 - 0.0007276319665834308
+287 - 0.000724507961422205
+288 - 0.0007258365512825549
+289 - 0.0007274580420926213
+290 - 0.0007280084537342191
+291 - 0.0007275324896909297
+292 - 0.000726213154848665
+293 - 0.00072528887540102
+294 - 0.0007239143596962094
+295 - 0.0007239471306093037
+296 - 0.0007262410363182425
+297 - 0.0007252279319800436
+298 - 0.0007265815511345863
+299 - 0.0007249571499414742
+300 - 0.0007254501688294113
+301 - 0.0007251750212162733
+302 - 0.0007229780894704163
+303 - 0.0007231606869027019
+304 - 0.0007254887605085969
+305 - 0.0007222809363156557
+306 - 0.0007189850439317524
+307 - 0.0007214752258732915
+308 - 0.0007250854978337884
+309 - 0.0007247623289003968
+310 - 0.0007272775401361287
+311 - 0.000728063634596765
+312 - 0.0007299418793991208
+313 - 0.0007290819776244462
+314 - 0.0007281374419108033
+315 - 0.0007275340612977743
+316 - 0.0007231914787553251
+317 - 0.0007229063776321709
+318 - 0.0007212582277134061
+319 - 0.0007206884329207242
+320 - 0.0007219786057248712
+321 - 0.0007232188945636153
+322 - 0.0007229497423395514
+323 - 0.0007252503419294953
+324 - 0.000723139033652842
+325 - 0.0007285826723091304
+326 - 0.0007275090902112424
+327 - 0.0007227460155263543
+328 - 0.0007231900235638022
+329 - 0.000726554193533957
+330 - 0.0007246063905768096
+331 - 0.0007219460676424205
+332 - 0.0007232619682326913
+333 - 0.0007243463769555092
+334 - 0.0007239231490530074
+335 - 0.0007244486478157341
+336 - 0.000725793419405818
+337 - 0.0007267931359820068
+338 - 0.0007233733776956797
+339 - 0.0007247821777127683
+340 - 0.0007234446820802987
+341 - 0.0007197823142632842
+342 - 0.0007225262233987451
+343 - 0.0007219960680231452
+344 - 0.0007234625518321991
+345 - 0.0007226883317343891
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>346 - 0.0007227328605949879
+347 - 0.0007248410256579518
+348 - 0.0007266263710334897
+349 - 0.0007272056536749005
+350 - 0.0007228380418382585
+351 - 0.000724643119610846
+352 - 0.0007214319193735719
+353 - 0.0007231606286950409
+354 - 0.0007251945789903402
+355 - 0.0007249743212014437
+356 - 0.0007233008509501815
+357 - 0.0007262824801728129
+358 - 0.0007257459801621735
+359 - 0.0007258682744577527
+360 - 0.0007234319346025586
+361 - 0.0007246015011332929
+362 - 0.0007243187283165753
+363 - 0.0007229942129924893
+364 - 0.0007236968958750367
+365 - 0.0007228669710457325
+366 - 0.0007214852375909686
+367 - 0.0007241881685331464
+368 - 0.0007241476560011506
+369 - 0.0007235879311338067
+370 - 0.0007240766426548362
+371 - 0.000721096876077354
+372 - 0.0007214178331196308
+373 - 0.0007240324630402029
+374 - 0.0007240180857479572
+375 - 0.000722188560757786
+376 - 0.0007218554383143783
+377 - 0.0007216172525659204
+378 - 0.0007222704007290304
+379 - 0.0007214511279016733
+380 - 0.0007207595626823604
+381 - 0.0007232791394926608
+382 - 0.0007242134306579828
+383 - 0.0007263242732733488
+384 - 0.0007253031944856048
+385 - 0.0007287338376045227
+386 - 0.00072792440187186
+387 - 0.0007268745102919638
+388 - 0.0007248175097629428
+389 - 0.0007222125423140824
+390 - 0.000721369287930429
+391 - 0.0007240640698000789
+392 - 0.0007211366319097579
+393 - 0.0007212033378891647
+394 - 0.0007270551868714392
+395 - 0.0007265848689712584
+396 - 0.000724439334589988
+397 - 0.0007248825277201831
+398 - 0.0007257157703861594
+399 - 0.0007250683847814798
+400 - 0.0007233928772620857
+401 - 0.0007213306380435824
+402 - 0.0007254519732668996
+403 - 0.0007254749070852995
+404 - 0.0007235737866722047
+405 - 0.0007235828088596463
+406 - 0.0007196579244919121
+407 - 0.0007209355244413018
+408 - 0.0007218713872134686
+409 - 0.0007227428141050041
+410 - 0.000721647753380239
+411 - 0.000722218886949122
+412 - 0.0007209074683487415
+413 - 0.000724072044249624
+414 - 0.0007271399372257292
+415 - 0.0007287769112735987
+416 - 0.0007304478203877807
+417 - 0.0007251574425026774
+418 - 0.0007269640336744487
+419 - 0.000721018121112138
+420 - 0.0007224887376651168
+421 - 0.00072401826037094
+422 - 0.0007265558815561235
+423 - 0.0007234491058625281
+424 - 0.0007199143874458969
+425 - 0.0007205838337540627
+426 - 0.0007211032789200544
+427 - 0.0007227567257359624
+428 - 0.0007210699841380119
+429 - 0.0007270299829542637
+430 - 0.0007270636851899326
+431 - 0.0007245350861921906
+432 - 0.0007237431709654629
+433 - 0.0007191930781118572
+434 - 0.0007255258387885988
+435 - 0.0007253833464346826
+436 - 0.0007285438477993011
+437 - 0.0007278424454852939
+438 - 0.0007247388130053878
+439 - 0.0007219092804007232
+440 - 0.0007222323911264539
+441 - 0.0007229913026094437
+442 - 0.0007195302750915289
+443 - 0.0007207280723378062
+444 - 0.0007204362191259861
+445 - 0.000723010569345206
+446 - 0.0007242899155244231
+447 - 0.0007286834879778326
+448 - 0.0007279446581378579
+449 - 0.0007258960395120084
+450 - 0.0007313038222491741
+451 - 0.0007303455495275557
+452 - 0.0007256263052113354
+453 - 0.0007205557194538414
+454 - 0.0007178278174251318
+455 - 0.0007173730991780758
+456 - 0.0007166758296079934
+457 - 0.0007205917499959469
+458 - 0.0007236567325890064
+459 - 0.0007270651985891163
+460 - 0.0007297185948118567
+461 - 0.0007274582167156041
+462 - 0.0007274410454556346
+463 - 0.0007238543475978076
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>464 - 0.0007205245201475918
+465 - 0.0007200957625173032
+466 - 0.0007210838375613093
+467 - 0.0007189723546616733
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>468 - 0.0007233912474475801
+469 - 0.0007197324302978814
+470 - 0.0007230035844258964
+471 - 0.0007262112922035158
+472 - 0.0007331218803301454
+473 - 0.0007326496415771544
+474 - 0.0007296016556210816
+475 - 0.0007290893117897213
+476 - 0.0007274436065927148
+477 - 0.0007210398907773197
+478 - 0.0007177377701736987
+479 - 0.0007165266433730721
+480 - 0.0007172184414230287
+481 - 0.0007221548003144562
+482 - 0.0007198055973276496
+483 - 0.0007253399817273021
+484 - 0.000728271494153887
+485 - 0.0007262100698426366
+486 - 0.0007246072054840624
+487 - 0.0007263302686624229
+488 - 0.0007263742154464126
+489 - 0.0007228543981909752
+490 - 0.0007188344607129693
+491 - 0.0007213391363620758
+492 - 0.0007252473151311278
+493 - 0.0007286754553206265
+494 - 0.0007260325364768505
+495 - 0.0007210471085272729
+496 - 0.0007202100823633373
+497 - 0.0007223362335935235
+498 - 0.0007277957047335804
+499 - 0.0007257836405187845
+500 - 0.0007239052793011069
+501 - 0.0007236757664941251
+502 - 0.0007262321887537837
+503 - 0.0007249451009556651
+504 - 0.0007240385166369379
+505 - 0.0007226148736663163
+506 - 0.0007258601253852248
+507 - 0.0007179627427831292
+508 - 0.0007170956814661622
+509 - 0.0007208960014395416
+510 - 0.0007291760412044823
+511 - 0.0007233545184135437
+512 - 0.0007215846562758088
+513 - 0.0007218619575724006
+514 - 0.0007246191380545497
+515 - 0.0007276145624928176
+516 - 0.0007248985348269343
+517 - 0.0007254526717588305
+518 - 0.0007241383427754045
+519 - 0.0007245197193697095
+520 - 0.000722174474503845
+521 - 0.0007216436788439751
+522 - 0.0007156669162213802
+523 - 0.000724596029613167
+524 - 0.000728385231923312
+525 - 0.0007253858493641019
+526 - 0.0007260603597387671
+527 - 0.0007273535011336207
+528 - 0.0007231299532577395
+529 - 0.000719999079592526
+530 - 0.0007254470256157219
+531 - 0.0007283766753971577
+532 - 0.0007275453535839915
+533 - 0.0007221110863611102
+534 - 0.0007238449179567397
+535 - 0.0007254397496581078
+536 - 0.0007232318166643381
+537 - 0.0007213000790216029
+538 - 0.0007223365246318281
+539 - 0.0007213369244709611
+540 - 0.0007265772437676787
+541 - 0.0007210984476841986
+542 - 0.000721920165233314
+543 - 0.000724201847333461
+544 - 0.0007215047953650355
+545 - 0.000724555691704154
+546 - 0.0007288262713700533
+547 - 0.000724349869415164
+548 - 0.0007228914182633162
+549 - 0.0007238815305754542
+550 - 0.000728572893422097
+551 - 0.0007279673009179533
+552 - 0.0007258403347805142
+553 - 0.0007182875415310264
+554 - 0.0007209714967757463
+555 - 0.0007188729359768331
+556 - 0.0007238751859404147
+557 - 0.0007282911683432758
+558 - 0.0007354731787927449
+559 - 0.0007286742329597473
+560 - 0.0007242296705953777
+561 - 0.0007154100458137691
+562 - 0.0007204323774203658
+563 - 0.0007167766452766955
+564 - 0.0007236415985971689
+565 - 0.0007252346258610487
+566 - 0.0007296984549611807
+567 - 0.0007257514516822994
+568 - 0.0007217805250547826
+569 - 0.0007234535296447575
+570 - 0.0007222183048725128
+571 - 0.0007235290831886232
+572 - 0.0007246220484375954
+573 - 0.0007307301857508719
+574 - 0.0007253542426042259
+575 - 0.0007218128303065896
+576 - 0.0007206050213426352
+577 - 0.0007220039842650294
+578 - 0.0007234537624754012
+579 - 0.0007240371196530759
+580 - 0.0007224160945042968
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>581 - 0.0007248918409459293
+582 - 0.0007226286688819528
+583 - 0.0007295754039660096
+584 - 0.0007281015277840197
+585 - 0.0007237749523483217
+586 - 0.0007268966292031109
+587 - 0.0007230390328913927
+588 - 0.0007175515638664365
+589 - 0.0007215656223706901
+590 - 0.0007208120077848434
+591 - 0.0007177012739703059
+592 - 0.000720642798114568
+593 - 0.0007251318311318755
+594 - 0.0007309644715860486
+595 - 0.0007302332669496536
+596 - 0.0007223912398330867
+597 - 0.0007165203569456935
+598 - 0.0007231696508824825
+599 - 0.0007273948285728693
+600 - 0.0007231119670905173
+601 - 0.0007265697931870818
+602 - 0.0007249821210280061
+603 - 0.000722163706086576
+604 - 0.0007219050312414765
+605 - 0.000722781871445477
+606 - 0.0007211054908111691
+607 - 0.0007201348198577762
+608 - 0.0007218068349175155
+609 - 0.0007245705928653479
+610 - 0.0007267101900652051
+611 - 0.0007292785448953509
+612 - 0.0007280921563506126
+613 - 0.0007238677935674787
+614 - 0.0007233115029521286
+615 - 0.0007170046446844935
+616 - 0.000718400813639164
+617 - 0.00072134705260396
+618 - 0.0007334560505114496
+619 - 0.000726423691958189
+620 - 0.0007177859079092741
+621 - 0.0007174296188168228
+622 - 0.0007182531990110874
+623 - 0.0007250820053741336
+624 - 0.0007278170669451356
+625 - 0.000729305378627032
+626 - 0.0007254551164805889
+627 - 0.0007259060512296855
+628 - 0.0007241260609589517
+629 - 0.0007198859238997102
+630 - 0.0007155254716053605
+631 - 0.0007152653415687382
+632 - 0.0007273922674357891
+633 - 0.0007300643483176827
+634 - 0.0007305142353288829
+635 - 0.0007272785878740251
+636 - 0.0007220378029160202
+637 - 0.0007145068957470357
+638 - 0.0007190286414697766
+639 - 0.0007218235405161977
+640 - 0.0007259978447109461
+641 - 0.0007285638712346554
+642 - 0.0007321058656089008
+643 - 0.000726104190107435
+644 - 0.0007250384078361094
+645 - 0.0007247679168358445
+646 - 0.0007217422826215625
+647 - 0.0007195667130872607
+648 - 0.0007188845193013549
+649 - 0.0007139341323636472
+650 - 0.0007241972489282489
+651 - 0.0007273730589076877
+652 - 0.0007319059805013239
+653 - 0.0007307960768230259
+654 - 0.0007224450237117708
+655 - 0.0007188450545072556
+656 - 0.0007210084586404264
+657 - 0.0007256917888298631
+658 - 0.0007215379155240953
+659 - 0.0007276615360751748
+660 - 0.0007256291573867202
+661 - 0.0007280592108145356
+662 - 0.0007214328506961465
+663 - 0.0007210124749690294
+664 - 0.000723327393643558
+665 - 0.0007217183010652661
+666 - 0.0007251714705489576
+667 - 0.0007189713651314378
+668 - 0.0007228920585475862
+669 - 0.0007217635284177959
+670 - 0.0007208390161395073
+671 - 0.0007322579622268677
+672 - 0.0007318289717659354
+673 - 0.0007252732757478952
+674 - 0.0007245015003718436
+675 - 0.000719570554792881
+676 - 0.000712710665538907
+677 - 0.0007167122093960643
+678 - 0.0007254316005855799
+679 - 0.000737823429517448
+680 - 0.0007311676745302975
+681 - 0.0007328329375013709
+682 - 0.0007332657696679235
+683 - 0.000725853955373168
+684 - 0.0007217320380732417
+685 - 0.0007148240692913532
+686 - 0.0007149018347263336
+687 - 0.0007159820524975657
+688 - 0.0007191086770035326
+689 - 0.0007267280598171055
+690 - 0.0007340764859691262
+691 - 0.0007256161770783365
+692 - 0.0007324384059756994
+693 - 0.0007240319391712546
+694 - 0.0007222027634270489
+695 - 0.0007202296983450651
+696 - 0.0007183999987319112
+697 - 0.0007191424956545234
+698 - 0.0007256396347656846
+699 - 0.0007261706632561982
+700 - 0.0007361536263488233
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>701 - 0.0007340888259932399
+702 - 0.0007199647952802479
+703 - 0.0007128264405764639
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>704 - 0.0007198856910690665
+705 - 0.0007219461840577424
+706 - 0.0007294799434021115
+707 - 0.0007316068513318896
+708 - 0.0007227313471958041
+709 - 0.0007201637490652502
+710 - 0.0007161346147768199
+711 - 0.0007242732681334019
+712 - 0.0007268136832863092
+713 - 0.0007200250984169543
+714 - 0.0007197114173322916
+715 - 0.0007246023742482066
+716 - 0.000734322820790112
+717 - 0.0007333420217037201
+718 - 0.0007224847795441747
+719 - 0.0007219589897431433
+720 - 0.0007206938462331891
+721 - 0.0007159006199799478
+722 - 0.0007210765033960342
+723 - 0.000720167241524905
+724 - 0.000734920846298337
+725 - 0.0007297013653442264
+726 - 0.0007246750756166875
+727 - 0.0007150378660298884
+728 - 0.0007304223254323006
+729 - 0.0007236293167807162
+730 - 0.0007185172289609909
+731 - 0.0007188207237049937
+732 - 0.000727344595361501
+733 - 0.0007283746381290257
+734 - 0.0007284619496203959
+735 - 0.0007249953341670334
+736 - 0.0007204642752185464
+737 - 0.0007120895315892994
+738 - 0.0007151785539463162
+739 - 0.0007226442103274167
+740 - 0.0007335587288253009
+741 - 0.0007432023994624615
+742 - 0.0007289544446393847
+743 - 0.000725707272067666
+744 - 0.0007158239604905248
+745 - 0.0007173385820351541
+746 - 0.0007188903982751071
+747 - 0.0007245372980833054
+748 - 0.0007280907593667507
+749 - 0.000730284780729562
+750 - 0.0007344307377934456
+751 - 0.0007195501821115613
+752 - 0.0007202083943411708
+753 - 0.0007201597327366471
+754 - 0.0007203560671769083
+755 - 0.00072293117409572
+756 - 0.0007188247400335968
+757 - 0.0007227169116958976
+758 - 0.0007295574760064483
+759 - 0.0007297443808056414
+760 - 0.0007311812369152904
+761 - 0.0007218938553705812
+762 - 0.0007289713830687106
+763 - 0.0007183138513937593
+764 - 0.0007164530688896775
+765 - 0.000718851457349956
+766 - 0.0007241448620334268
+767 - 0.0007254115771502256
+768 - 0.000725696561858058
+769 - 0.0007276685209944844
+770 - 0.0007184294518083334
+771 - 0.0007229045731946826
+772 - 0.0007153633050620556
+773 - 0.0007248694892041385
+774 - 0.0007300923462025821
+775 - 0.0007281644502654672
+776 - 0.0007249571499414742
+777 - 0.0007197369122877717
+778 - 0.0007323122699744999
+779 - 0.0007272338843904436
+780 - 0.0007189390598796308
+781 - 0.0007193280616775155
+782 - 0.0007199394167400897
+783 - 0.0007244482403621078
+784 - 0.0007208166643977165
+785 - 0.0007196029764600098
+786 - 0.0007280810968950391
+787 - 0.0007316148257814348
+788 - 0.000725668272934854
+789 - 0.000730276049580425
+790 - 0.000717541784979403
+791 - 0.0007202493725344539
+792 - 0.0007176547078415751
+793 - 0.0007210905314423144
+794 - 0.0007201562402769923
+795 - 0.0007231204654090106
+796 - 0.0007246446330100298
+797 - 0.0007262876024469733
+798 - 0.0007354676490649581
+799 - 0.0007219972903840244
+800 - 0.0007253594812937081
+801 - 0.0007240715203806758
+802 - 0.0007191417971625924
+803 - 0.0007280013523995876
+804 - 0.0007237360114231706
+805 - 0.0007233742508105934
+806 - 0.0007261987775564194
+807 - 0.0007198410457931459
+808 - 0.0007207774324342608
+809 - 0.0007245697779580951
+810 - 0.0007237384561449289
+811 - 0.0007243682048283517
+812 - 0.0007216169033199549
+813 - 0.000727332488168031
+814 - 0.0007180855027399957
+815 - 0.0007239922415465117
+816 - 0.000724583922419697
+817 - 0.0007231378694996238
+818 - 0.0007372716790996492
+819 - 0.0007290462963283062
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>820 - 0.0007276455289684236
+821 - 0.0007199296960607171
+822 - 0.0007142256945371628
+823 - 0.0007130887825042009
+824 - 0.0007245549350045621
+825 - 0.0007330647786147892
+826 - 0.0007312860689125955
+827 - 0.0007224034052342176
+828 - 0.0007125422125682235
+829 - 0.0007158361258916557
+830 - 0.0007208086317405105
+831 - 0.0007296443800441921
+832 - 0.0007285048486664891
+833 - 0.0007291330839507282
+834 - 0.0007215135265141726
+835 - 0.0007232900243252516
+836 - 0.0007231921190395951
+837 - 0.0007212294731289148
+838 - 0.0007236566743813455
+839 - 0.000719908275641501
+840 - 0.0007272523362189531
+841 - 0.0007240985287353396
+842 - 0.0007282577571459115
+843 - 0.0007166310679167509
+844 - 0.0007148234872147441
+845 - 0.0007280317367985845
+846 - 0.0007319172145798802
+847 - 0.0007249052287079394
+848 - 0.0007237407262437046
+849 - 0.0007201078697107732
+850 - 0.0007241340354084969
+851 - 0.0007218807004392147
+852 - 0.0007367079961113632
+853 - 0.0007311665685847402
+854 - 0.0007207252783700824
+855 - 0.0007150961901061237
+856 - 0.0007166062132455409
+857 - 0.0007202915730886161
+858 - 0.000733395921997726
+859 - 0.0007367483340203762
+860 - 0.0007248154724948108
+861 - 0.0007283195736818016
+862 - 0.0007213782519102097
+863 - 0.0007187396404333413
+864 - 0.0007193544297479093
+865 - 0.0007165479473769665
+866 - 0.0007303244201466441
+867 - 0.0007206473383121192
+868 - 0.000721187680028379
+869 - 0.0007290185894817114
+870 - 0.0007257002289406955
+871 - 0.0007256299140863121
+872 - 0.000714580062776804
+873 - 0.0007222649874165654
+874 - 0.0007264392916113138
+875 - 0.0007297591073438525
+876 - 0.0007217368693090975
+877 - 0.0007212228374555707
+878 - 0.0007363705080933869
+879 - 0.0007249092450365424
+880 - 0.0007202878477983177
+881 - 0.0007157122599892318
+882 - 0.0007193175842985511
+883 - 0.0007243166910484433
+884 - 0.0007408844539895654
+885 - 0.0007365646888501942
+886 - 0.0007135209743864834
+887 - 0.0007175077334977686
+888 - 0.0007251744391396642
+889 - 0.0007189615862444043
+890 - 0.0007180636166594923
+891 - 0.0007250792114064097
+892 - 0.0007413567509502172
+893 - 0.0007331978995352983
+894 - 0.0007160716922953725
+895 - 0.0007185270660556853
+896 - 0.0007175920763984323
+897 - 0.0007183457491919398
+898 - 0.0007250917260535061
+899 - 0.0007339512230828404
+900 - 0.0007264011073857546
+901 - 0.0007281600264832377
+902 - 0.0007206063019111753
+903 - 0.000727616366930306
+904 - 0.0007196940714493394
+905 - 0.0007172250188887119
+906 - 0.0007204347639344633
+907 - 0.0007292223745025694
+908 - 0.0007174242055043578
+909 - 0.0007320085423998535
+910 - 0.000732189801055938
+911 - 0.0007329685031436384
+912 - 0.000726367230527103
+913 - 0.0007123948307707906
+914 - 0.0007186928414739668
+915 - 0.0007196831284090877
+916 - 0.0007168358424678445
+917 - 0.0007240929990075529
+918 - 0.0007498710765503347
+919 - 0.0007294182432815433
+920 - 0.0007166150608099997
+921 - 0.0007126055425032973
+922 - 0.000715195550583303
+923 - 0.0007379386806860566
+924 - 0.0007442444330081344
+925 - 0.0007221080595627427
+926 - 0.0007148474105633795
+927 - 0.000717958842869848
+928 - 0.0007202918059192598
+929 - 0.0007194961654022336
+930 - 0.0007319204160012305
+931 - 0.000730648753233254
+932 - 0.0007213591015897691
+933 - 0.0007245909655466676
+934 - 0.0007279278943315148
+935 - 0.0007184065179899335
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>936 - 0.0007211640477180481
+937 - 0.0007197560044005513
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>938 - 0.0007268751505762339
+939 - 0.0007348583312705159
+940 - 0.0007255045929923654
+941 - 0.0007392411935143173
+942 - 0.0007288589258678257
+943 - 0.0007084005628712475
+944 - 0.00071537378244102
+945 - 0.0007225109729915857
+946 - 0.0007366155623458326
+947 - 0.0007310744840651751
+948 - 0.0007231422350741923
+949 - 0.0007150965975597501
+950 - 0.0007128135766834021
+951 - 0.0007215022342279553
+952 - 0.0007386532961390913
+953 - 0.0007329197833314538
+954 - 0.0007386720390059054
+955 - 0.0007164140115492046
+956 - 0.0007156574865803123
+957 - 0.0007170489989221096
+958 - 0.0007275637472048402
+959 - 0.0007260109996423125
+960 - 0.0007192686898633838
+961 - 0.000719982257578522
+962 - 0.0007474208832718432
+963 - 0.0007334616966545582
+964 - 0.0007162156980484724
+965 - 0.0007122462848201394
+966 - 0.0007149780867621303
+967 - 0.0007225921144708991
+968 - 0.000745164870750159
+969 - 0.0007338444702327251
+970 - 0.0007256843964569271
+971 - 0.0007240250706672668
+972 - 0.0007136633503250778
+973 - 0.0007234595832414925
+974 - 0.0007243802538141608
+975 - 0.0007274668896570802
+976 - 0.0007202440174296498
+977 - 0.0007280231220647693
+978 - 0.000731682579498738
+979 - 0.000741884985473007
+980 - 0.0007220329716801643
+981 - 0.0007193876663222909
+982 - 0.0007110973238013685
+983 - 0.0007158272201195359
+984 - 0.0007215826190076768
+985 - 0.0007356322021223605
+986 - 0.0007482822984457016
+987 - 0.0007348667713813484
+988 - 0.0007152323378250003
+989 - 0.0007103542448021472
+990 - 0.0007175015052780509
+991 - 0.0007300421711988747
+992 - 0.0007307191262952983
+993 - 0.0007291515939868987
+994 - 0.0007395177381113172
+995 - 0.0007222803542390466
+996 - 0.0007203990826383233
+997 - 0.0007080588839016855
+998 - 0.0007226133020594716
+999 - 0.0007227976457215846
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[Parameter containing:
+tensor([0.8027], requires_grad=True), Parameter containing:
+tensor([2.0448], requires_grad=True)]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.00091515825
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">y_train</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">y_hat</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;function matplotlib.pyplot.show(close=None, block=None)&gt;
+</pre></div>
+</div>
+<img alt="../_images/009682e449a42030df22b3b69437570808684faf0bea7ccca8b02f054b6730d7.png" src="../_images/009682e449a42030df22b3b69437570808684faf0bea7ccca8b02f054b6730d7.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mse_loss</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">y_test</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">y_hat</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;function matplotlib.pyplot.show(close=None, block=None)&gt;
+</pre></div>
+</div>
+<img alt="../_images/a37c35eb9095a9a188cd6c7bb5ccc96a23e28e008902f76a4316355aeb30a7df.png" src="../_images/a37c35eb9095a9a188cd6c7bb5ccc96a23e28e008902f76a4316355aeb30a7df.png" />
+</div>
+</div>
+<ul class="simple">
+<li><p>see: <a class="reference external" href="https://en.wikipedia.org/wiki/Gradient_descent">https://en.wikipedia.org/wiki/Gradient_descent</a></p></li>
+<li><p>see: <a class="reference external" href="http://www.athenasc.com/nonlinbook.html">http://www.athenasc.com/nonlinbook.html</a></p></li>
+<li><p>see: <a class="reference external" href="https://handoutset.com/nonlinear-programming-dimitri-p-bertsekas/">https://handoutset.com/nonlinear-programming-dimitri-p-bertsekas/</a></p></li>
+<li><p>see: <a class="reference external" href="https://optimization.cbe.cornell.edu/index.php?title=Main_Page">https://optimization.cbe.cornell.edu/index.php?title=Main_Page</a></p></li>
+</ul>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./le2"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pse-ml-02-01-supervised_learning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Supervised Learning</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="pse-ml-02-03-linear_regression.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Linear and Non-linear Regression</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-descent-gd-algorithm">Gradient Descent (GD) Algorithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-descent-with-pytorch">Gradient Descent with PyTorch</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#start-with-some-toy-data">Start with some toy data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-pytorch-tensor-from-numpy-array">Create a Pytorch tensor from numpy array</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#split-the-data-into-train-and-test-data">Split the data into train and test data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#define-a-linear-model-that-fit-the-data-well">Define a linear model that fit the data well</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-mean-squared-error-as-cost-function">Use Mean Squared Error as Cost Function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#train-the-model">Train the model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#now-use-more-pytorch">Now use more PyTorch</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Dominik Neumann and Prof. Dr. Oliver Burgert
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
