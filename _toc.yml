@@ -4,7 +4,7 @@
 format: jb-book
 root: intro_en
 parts:
-  - caption: LE 1 - Introduction into Machine Learning with Python
+  - caption: Part 1 - Introduction into Machine Learning with Python
     chapters:
     - file: le1/pse-ml-overview
       sections:
@@ -21,6 +21,19 @@ parts:
         - file: le1/pse-ml-data_timeseries
         - file: le1/pse-ml-data_images
         - file: le1/pse-ml-data_graphs
+  - caption: Part 2 - Classical Machine Learning
+    chapters: 
+    - file: le2/pse-ml-02-00-overview
+    - file: le2/pse-ml-02-01-supervised_learning
+    - file: le2/pse-ml-02-02-gradient_descent
+    - file: le2/pse-ml-02-03-linear_regression
+    - file: le2/pse-ml-02-04-classification
+    - file: le2/pse-ml-02-05-logistic_regression
+    - file: le2/pse-ml-02-06-perceptron
+    - file: le2/pse-ml-02-07-support_vector_machine
+    - file: le2/pse-ml-02-08-decision_tree
+  #- caption: Part 3 - Deep Learning
+  #- caption: Part 4 - Large Language Models
   - caption: Further Reading
     chapters:
     - file: further_reading

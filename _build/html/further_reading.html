@@ -64,7 +64,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'further_reading';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Graphs and Networks" href="le1/pse-ml-data_graphs.html" />
+    <link rel="prev" title="Non Linear Regression" href="le2/pse-ml-02-08-decision_tree.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -149,7 +149,7 @@ const thebe_selector_output = ".output, .cell_output"
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">LE 1 - Introduction into Machine Learning with Python</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Part 1 - Introduction into Machine Learning with Python</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="le1/pse-ml-overview.html">Machine Learning</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="le1/pse-ml-learning_problem.html">Learning Problem</a></li>
@@ -169,6 +169,24 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="le1/pse-ml-data_graphs.html">Graphs and Networks</a></li>
 </ul>
 </li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Part 2 - Classical Machine Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="le2/pse-ml-02-00-overview.html">Classical Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="le2/pse-ml-02-01-supervised_learning.html">Supervised Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="le2/pse-ml-02-02-gradient_descent.html">Gradient Descent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="le2/pse-ml-02-03-linear_regression.html">Linear and Non-linear Regression</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="le2/pse-ml-02-04-classification.html">Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="le2/pse-ml-02-05-logistic_regression.html">Logistic Regression</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="le2/pse-ml-02-06-perceptron.html">Perceptron</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="le2/pse-ml-02-07-support_vector_machine.html">Support Vector Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="le2/pse-ml-02-08-decision_tree.html">Non Linear Regression</a></li>
+
+
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Further Reading</span></p>
 <ul class="current nav bd-sidenav">
@@ -370,6 +388,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deep-learning">Deep Learning</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#machine-learning-and-data-science-with-python">Machine Learning and Data Science with Python</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-about-networks-and-graphs">More about Networks and Graphs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-and-non-linear-programming">Optimization and Non-Linear Programming</a></li>
 </ul>
             </nav>
         </div>
@@ -391,6 +410,7 @@ document.write(`
 <li><p>Machine Learning (by Tom Mitchell): <a class="reference external" href="http://www.cs.cmu.edu/~tom/mlbook.html">http://www.cs.cmu.edu/~tom/mlbook.html</a></p></li>
 <li><p>Mathematics for Machine Learning (by Marc Peter Deisenroth, A. Aldo Faisal, and Cheng Soon Ong. Published by Cambridge University Press): <a class="reference external" href="https://mml-book.github.io">https://mml-book.github.io</a></p></li>
 <li><p>Machine Learning: The Basics (by Alexander Jung): <a class="reference external" href="https://arxiv.org/abs/1805.05052">https://arxiv.org/abs/1805.05052</a></p></li>
+<li><p>Top 10 algorithms in data mining: <a class="reference external" href="https://cse.hkust.edu.hk/~qyang/Docs/2007/top10.pdf">https://cse.hkust.edu.hk/~qyang/Docs/2007/top10.pdf</a></p></li>
 </ul>
 </section>
 <section id="deep-learning">
@@ -412,6 +432,14 @@ document.write(`
 <li><p>Networks, Crowds, and Markets: Reasoning About a Highly Connected World (by David Easley and Jon Kleinberg): <a class="reference external" href="https://www.cs.cornell.edu/home/kleinber/networks-book/">https://www.cs.cornell.edu/home/kleinber/networks-book/</a></p></li>
 <li><p>Deep Graph Library:  <a class="github reference external" href="https://github.com/dmlc/dgl">dmlc/dgl</a></p></li>
 <li><p>Karateclub: <a class="reference external" href="https://karateclub.readthedocs.io/en/latest/index.html">https://karateclub.readthedocs.io/en/latest/index.html</a></p></li>
+<li><p>Graphical Models: the marriage of probability theory and graph theory: <a class="reference external" href="https://people.cs.umass.edu/~mccallum/courses/gm2011/">https://people.cs.umass.edu/~mccallum/courses/gm2011/</a></p></li>
+</ul>
+</section>
+<section id="optimization-and-non-linear-programming">
+<h2>Optimization and Non-Linear Programming<a class="headerlink" href="#optimization-and-non-linear-programming" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="http://www.athenasc.com/nonlinbook.html">Nonlinear Programming: 3rd Edition by Dimitri P. Bertsekas</a></p></li>
+<li><p><a class="reference external" href="https://optimization.cbe.cornell.edu/index.php?title=Main_Page">Cornell University Computational Optimization Open Textbook</a></p></li>
 </ul>
 </section>
 </section>
@@ -448,12 +476,12 @@ document.write(`
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="le1/pse-ml-data_graphs.html"
+       href="le2/pse-ml-02-08-decision_tree.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Graphs and Networks</p>
+        <p class="prev-next-title">Non Linear Regression</p>
       </div>
     </a>
 </div></div>
@@ -478,6 +506,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deep-learning">Deep Learning</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#machine-learning-and-data-science-with-python">Machine Learning and Data Science with Python</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-about-networks-and-graphs">More about Networks and Graphs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-and-non-linear-programming">Optimization and Non-Linear Programming</a></li>
 </ul>
   </nav></div>
 
